@@ -1,0 +1,123 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reusable core security predicates
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        (request.auth.token.email == 'baijitsk820@gmail.com' && request.auth.token.email_verified == true) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'Admin')
+      );
+    }
+
+    // Schema Validation Blueprints (Anti-Update-Gaps)
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['uid', 'name', 'email', 'businessName', 'role', 'createdAt']) &&
+        data.keys().size() == 6 &&
+        data.uid is string && data.uid.size() <= 128 &&
+        data.name is string && data.name.size() <= 100 &&
+        data.email is string && data.email.size() <= 100 &&
+        data.businessName is string && data.businessName.size() <= 100 &&
+        data.role == 'Client' && // Self-assigned roles are forbidden on registration
+        data.createdAt is string && data.createdAt.size() <= 40;
+    }
+
+    function isValidContactRequest(data) {
+      return data.keys().hasAll(['name', 'email', 'phone', 'serviceRequired', 'budget', 'message', 'status', 'date']) &&
+        data.keys().size() == 8 &&
+        data.name is string && data.name.size() <= 100 &&
+        data.email is string && data.email.size() <= 100 &&
+        data.phone is string && data.phone.size() <= 30 &&
+        data.serviceRequired is string && data.serviceRequired.size() <= 200 &&
+        data.budget is int &&
+        data.message is string && data.message.size() <= 5000 &&
+        data.status in ['new', 'replied', 'completed'] &&
+        data.date is string && data.date.size() <= 40;
+    }
+
+    function isValidNotification(data) {
+      return data.keys().hasAll(['type', 'title', 'description', 'time', 'read', 'date']) &&
+        data.keys().size() == 6 &&
+        data.type in ['order', 'client', 'contact', 'payment', 'ticket'] &&
+        data.title is string && data.title.size() <= 100 &&
+        data.description is string && data.description.size() <= 500 &&
+        data.time is string && data.time.size() <= 50 &&
+        data.read is bool &&
+        data.date is string && data.date.size() <= 40;
+    }
+
+    // Collection Mappings
+
+    match /users/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow create: if isSignedIn() && request.auth.uid == userId && isValidUserProfile(request.resource.data);
+      allow update: if isSignedIn() && (
+        isAdmin() || (
+          request.auth.uid == userId &&
+          isValidUserProfile(request.resource.data) &&
+          request.resource.data.role == resource.data.role && // Role is immutable for self-update
+          request.resource.data.uid == resource.data.uid &&
+          request.resource.data.email == resource.data.email
+        )
+      );
+      allow delete: if isAdmin();
+    }
+
+    match /admin_contacts/{contactId} {
+      allow create: if isValidContactRequest(request.resource.data);
+      allow get, list, update, delete: if isAdmin();
+    }
+
+    match /admin_notifications/{notificationId} {
+      allow create: if isValidNotification(request.resource.data);
+      allow get, list, update, delete: if isAdmin();
+    }
+
+    // Locked Administrative Workspace Core Entities
+    match /admin_orders/{id} {
+      allow read, write: if isAdmin();
+    }
+
+    match /admin_clients/{id} {
+      allow read, write: if isAdmin();
+    }
+
+    match /admin_hosting/{id} {
+      allow read, write: if isAdmin();
+    }
+
+    match /admin_domains/{id} {
+      allow read, write: if isAdmin();
+    }
+
+    match /admin_projects/{id} {
+      allow read, write: if isAdmin();
+    }
+
+    match /admin_tickets/{id} {
+      allow read, write: if isAdmin();
+    }
+
+    match /admin_settings/{id} {
+      allow read, write: if isAdmin();
+    }
+
+    match /admin_seo/{id} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

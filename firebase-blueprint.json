@@ -1,0 +1,224 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Client and administrator profiles",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "businessName": { "type": "string" },
+        "role": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "name", "email", "businessName", "role", "createdAt"]
+    },
+    "ContactRequest": {
+      "title": "ContactRequest",
+      "description": "Contact submissions and lead requests",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "serviceRequired": { "type": "string" },
+        "budget": { "type": "number" },
+        "message": { "type": "string" },
+        "status": { "type": "string", "enum": ["new", "replied", "completed"] },
+        "date": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "phone", "serviceRequired", "budget", "message", "status", "date"]
+    },
+    "AdminNotification": {
+      "title": "AdminNotification",
+      "description": "Administrative notifications for incoming activity",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["order", "client", "contact", "payment", "ticket"] },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "date": { "type": "string" },
+        "read": { "type": "boolean" }
+      },
+      "required": ["id", "type", "title", "message", "date", "read"]
+    },
+    "AdminOrder": {
+      "title": "AdminOrder",
+      "description": "Service orders placed by clients",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "clientName": { "type": "string" },
+        "clientEmail": { "type": "string" },
+        "serviceRequired": { "type": "string" },
+        "budget": { "type": "number" },
+        "date": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "completed", "cancelled"] },
+        "packageType": { "type": "string" }
+      },
+      "required": ["id", "clientName", "clientEmail", "serviceRequired", "budget", "date", "status", "packageType"]
+    },
+    "AdminClient": {
+      "title": "AdminClient",
+      "description": "Client account details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "company": { "type": "string" },
+        "packageType": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "suspended", "pending"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "phone", "company", "packageType", "status", "createdAt"]
+    },
+    "HostingAccount": {
+      "title": "HostingAccount",
+      "description": "Cloud hosting account statuses and server analytics",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "clientName": { "type": "string" },
+        "domain": { "type": "string" },
+        "plan": { "type": "string" },
+        "diskUsage": { "type": "string" },
+        "diskPercentage": { "type": "number" },
+        "bandwidth": { "type": "string" },
+        "bandwidthPercentage": { "type": "number" },
+        "cpuUsage": { "type": "number" },
+        "ramUsage": { "type": "number" },
+        "renewalDate": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "suspended", "terminated"] }
+      },
+      "required": ["id", "clientName", "domain", "plan", "diskUsage", "diskPercentage", "bandwidth", "bandwidthPercentage", "cpuUsage", "ramUsage", "renewalDate", "status"]
+    },
+    "AdminDomain": {
+      "title": "AdminDomain",
+      "description": "Managed customer domains",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "domainName": { "type": "string" },
+        "expiryDate": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "expired", "pending_transfer"] },
+        "autoRenewal": { "type": "boolean" }
+      },
+      "required": ["id", "domainName", "expiryDate", "status", "autoRenewal"]
+    },
+    "WebsiteProject": {
+      "title": "WebsiteProject",
+      "description": "Custom web design and dev projects",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "clientName": { "type": "string" },
+        "category": { "type": "string" },
+        "status": { "type": "string", "enum": ["in_progress", "under_review", "completed", "delivered"] },
+        "progress": { "type": "number" },
+        "timeline": { "type": "array" },
+        "notes": { "type": "string" },
+        "previewUrl": { "type": "string" }
+      },
+      "required": ["id", "title", "clientName", "category", "status", "progress", "timeline", "notes"]
+    },
+    "SupportTicket": {
+      "title": "SupportTicket",
+      "description": "Customer help and technical tickets",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "ticketId": { "type": "string" },
+        "subject": { "type": "string" },
+        "clientName": { "type": "string" },
+        "email": { "type": "string" },
+        "status": { "type": "string", "enum": ["open", "pending", "resolved"] },
+        "priority": { "type": "string", "enum": ["low", "medium", "high", "urgent"] },
+        "category": { "type": "string" },
+        "date": { "type": "string" },
+        "messages": { "type": "array" }
+      },
+      "required": ["id", "ticketId", "subject", "clientName", "email", "status", "priority", "category", "date", "messages"]
+    },
+    "AdminSettings": {
+      "title": "AdminSettings",
+      "description": "Global administration portal settings",
+      "type": "object",
+      "properties": {
+        "agencyName": { "type": "string" },
+        "contactEmail": { "type": "string" },
+        "stripeEnabled": { "type": "boolean" },
+        "maintenanceMode": { "type": "boolean" },
+        "alertRecipient": { "type": "string" },
+        "freeDomainWithVM": { "type": "boolean" },
+        "backupFrequency": { "type": "string" }
+      },
+      "required": ["agencyName", "contactEmail", "stripeEnabled", "maintenanceMode", "alertRecipient", "freeDomainWithVM", "backupFrequency"]
+    },
+    "AdminSeo": {
+      "title": "AdminSeo",
+      "description": "Global search engine optimization configuration",
+      "type": "object",
+      "properties": {
+        "defaultMetaTitle": { "type": "string" },
+        "defaultMetaDescription": { "type": "string" },
+        "googleAnalyticsId": { "type": "string" },
+        "robotsTxt": { "type": "string" },
+        "autoGenerateSitemap": { "type": "boolean" },
+        "targetKeywords": { "type": "string" }
+      },
+      "required": ["defaultMetaTitle", "defaultMetaDescription", "googleAnalyticsId", "robotsTxt", "autoGenerateSitemap", "targetKeywords"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Stores user profiles"
+    },
+    "/admin_contacts/{contactId}": {
+      "schema": "ContactRequest",
+      "description": "Stores contact requests and leads"
+    },
+    "/admin_notifications/{notificationId}": {
+      "schema": "AdminNotification",
+      "description": "Stores administrative notifications"
+    },
+    "/admin_orders/{orderId}": {
+      "schema": "AdminOrder",
+      "description": "Stores client service orders"
+    },
+    "/admin_clients/{clientId}": {
+      "schema": "AdminClient",
+      "description": "Stores details of clients"
+    },
+    "/admin_hosting/{hostingId}": {
+      "schema": "HostingAccount",
+      "description": "Stores cloud hosting accounts"
+    },
+    "/admin_domains/{domainId}": {
+      "schema": "AdminDomain",
+      "description": "Stores customer-owned domain states"
+    },
+    "/admin_projects/{projectId}": {
+      "schema": "WebsiteProject",
+      "description": "Stores customer web design projects"
+    },
+    "/admin_tickets/{ticketId}": {
+      "schema": "SupportTicket",
+      "description": "Stores client support tickets"
+    },
+    "/admin_settings/config": {
+      "schema": "AdminSettings",
+      "description": "Stores general admin settings"
+    },
+    "/admin_seo/config": {
+      "schema": "AdminSeo",
+      "description": "Stores SEO metadata configuration"
+    }
+  }
+}

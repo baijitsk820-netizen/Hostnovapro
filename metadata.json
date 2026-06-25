@@ -1,0 +1,8 @@
+{
+  "name": "Remix: HostNovaPro",
+  "description": "Premium 3D Web Design \u0026 Development Agency Website featuring high-converting custom mockups, parallax scroll animations, and interactive client portal.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
